@@ -1,5 +1,5 @@
 NAME		= philo
-SRC_FILES	= main.c
+SRC_FILES	= main.c utils.c
 SRC_DIR		= src
 SRC			= $(addprefix $(SRC_DIR)/, $(SRC_FILES))
 OBJ_DIR		= $(SRC_DIR)/obj
