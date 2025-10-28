@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 16:07:29 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/10/28 19:36:46 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/10/28 20:01:56 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,5 +37,8 @@ typedef struct s_data
 
 // utils
 long	get_time(long time);
+long	ft_atol(char *nptr);
+// init
+void	init(t_data *data, int argc, char **argv);
 
 #endif
