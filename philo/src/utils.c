@@ -6,19 +6,11 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 10:33:04 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/10/28 19:58:12 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/10/31 19:01:03 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/philo.h"
-
-long	get_time(long time)
-{
-	struct timeval	tv;
-
-	gettimeofday(&tv, NULL);
-	return (tv.tv_sec * 1000 + tv.tv_usec / 1000 - time);
-}
 
 long	ft_atol(char *nptr)
 {
@@ -31,4 +23,29 @@ long	ft_atol(char *nptr)
 		nptr++;
 	}
 	return (n);
+}
+
+long	get_time(long time)
+{
+	struct timeval	tv;
+
+	gettimeofday(&tv, NULL);
+	return (tv.tv_sec * 1000 + tv.tv_usec / 1000 - time);
+}
+
+void	print_status(t_table *table, int philo, char mode)
+{
+	char	*str;
+
+	if (mode == 'f')
+		str = "has taken a fork";
+	else if (mode == 'e')
+		str = "is eating";
+	else if (mode == 's')
+		str = "is sleeping";
+	else if (mode == 't')
+		str = "is thinking";
+	else if (mode == 'd')
+		str = "died";
+	printf("%li %i %s\n", get_time(table->stime), philo, str);
 }

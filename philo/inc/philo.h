@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 16:07:29 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/10/31 18:43:45 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/10/31 19:01:41 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,8 +52,9 @@ typedef struct s_table
 }	t_table;
 
 // utils
-long	get_time(long time);
 long	ft_atol(char *nptr);
+long	get_time(long time);
+void	print_status(t_table *table, int philo, char mode);
 // init
 int		init(t_table *table, int argc, char **argv);
 
