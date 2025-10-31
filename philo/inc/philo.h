@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 16:07:29 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/10/30 16:53:38 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/10/31 18:43:45 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,34 +19,42 @@
 # include <sys/time.h>
 # include <pthread.h>
 
-typedef struct s_data
+typedef struct s_fork
+{
+	int				is_taken;
+	pthread_mutex_t	mutex;
+}	t_fork;
+
+typedef struct s_philo
+{
+	int				id;
+	struct s_table	*table;
+	long			last_meal;
+	long			meals;
+	struct s_fork	*left_fork;
+	struct s_fork	*right_fork;
+	pthread_mutex_t	mutex;
+}	t_philo;
+
+typedef struct s_table
 {
 	int				nphilos;
+	long			stime;
 	long			tdie;
 	long			teat;
 	long			tsleep;
 	long			max_meals;
 	int				status;
-	pthread_t		*philos;
-	pthread_mutex_t	*forks;
-	pthread_mutex_t	*mutex;
-}	t_data;
-
-typedef struct s_philo
-{
-	int				id;
-	struct s_data	data;
-	long			last_meal;
-	long			meals;
-	pthread_mutex_t	*left_fork;
-	pthread_mutex_t	*right_fork;
-	pthread_mutex_t	*mutex;
-}	t_philo;
+	pthread_t		*threads;
+	struct s_philo	*philos;
+	struct s_fork	*forks;
+	pthread_mutex_t	mutex;
+}	t_table;
 
 // utils
 long	get_time(long time);
 long	ft_atol(char *nptr);
 // init
-void	init(t_data *data, int argc, char **argv);
+int		init(t_table *table, int argc, char **argv);
 
 #endif

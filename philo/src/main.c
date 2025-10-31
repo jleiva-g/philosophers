@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 16:06:25 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/10/28 19:40:23 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/10/31 12:55:46 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,9 @@
 
 int	main(int argc, char **argv)
 {
-	t_data	data;
+	t_table	table;
 
-	init(&data, argc, argv);
+	if (init(&table, argc, argv))
+		return (1);
 	return (0);
 }
