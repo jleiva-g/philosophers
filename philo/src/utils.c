@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 10:33:04 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/11/04 01:29:12 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/11/04 14:21:41 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ void	print_status(t_table *table, int philo, char mode)
 {
 	char	*str;
 
+	str = "";
 	if (mode == 'f')
 		str = "has taken a fork";
 	else if (mode == 'e')
