@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/31 17:34:39 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/10/31 19:06:18 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/11/04 01:24:13 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,26 +14,29 @@
 
 void	checker(t_table *table)
 {
-	int	i;
+	int		i;
+	long	last_meal;
+	long	meals;
 
 	while (1)
 	{
 		i = -1;
 		while (++i < table->nphilos)
 		{
-			pthread_mutex_lock(&table->philos[i].mutex);
-			pthread_mutex_lock(&table->mutex);
-			if (get_time(table->stime) - table->philos[i].last_meal
-				> table->tdie)
+			last_meal = get_var(&table->philos[i].last_meal,
+					&table->philos[i].lmutex);
+			if (get_time(table->stime) - last_meal > table->tdie)
 			{
-				table->status = i + 1;
-				print_status(table, i, 'd');
+				set_var(&table->status, &table->smutex, i + 1);
+				print_status(table, i + 1, 'd');
+				return ;
 			}
-			if (table->max_meals <= table->philos[i].meals)
-				table->status = -1;
-			pthread_mutex_unlock(&table->philos[i].mutex);
-			pthread_mutex_unlock(&table->mutex);
+			meals = get_var(&table->philos[i].meals, &table->philos[i].mmutex);
+			if (table->max_meals > -1 && table->max_meals <= meals)
+			{
+				set_var(&table->status, &table->smutex, -1);
+				return ;
+			}
 		}
 	}
-	return (0);
 }

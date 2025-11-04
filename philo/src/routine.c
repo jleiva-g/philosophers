@@ -6,8 +6,78 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/31 17:34:41 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/10/31 17:35:26 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/11/04 01:19:13 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/philo.h"
+
+static int	take_fork(t_philo *philo, int side)
+{
+	t_fork	*fork;
+
+	if (side)
+		fork = philo->left_fork;
+	else
+		fork = philo->right_fork;
+	pthread_mutex_lock(&fork->mutex);
+	if (fork->is_taken)
+	{
+		pthread_mutex_unlock(&fork->mutex);
+		return (1);
+	}
+	else
+	{
+		pthread_mutex_unlock(&fork->mutex);
+		fork->is_taken = 1;
+		print_status(philo->table, philo->id, 'f');
+		return (0);
+	}
+}
+
+static void	ph_eat(t_philo *philo)
+{
+	print_status(philo->table, philo->id, 'e');
+	pthread_mutex_lock(&philo->lmutex);
+	philo->last_meal = get_time(philo->table->stime);
+	pthread_mutex_unlock(&philo->lmutex);
+	usleep(philo->table->teat * 1000);
+	pthread_mutex_lock(&philo->mmutex);
+	philo->meals++;
+	pthread_mutex_unlock(&philo->mmutex);
+}
+
+static void	ph_sleep(t_philo *philo)
+{
+	print_status(philo->table, philo->id, 's');
+	usleep(philo->table->tsleep * 1000);
+}
+
+void	*routine(void *param)
+{
+	t_philo	*philo;
+
+	philo = (t_philo *) param;
+	if (!(philo->id % 2))
+	{
+		print_status(philo->table, philo->id, 't');
+		usleep(500);
+	}
+	while (!get_var(&philo->table->status, &philo->table->smutex))
+	{
+		while (take_fork(philo, philo->table->nphilos != philo->id))
+			if (get_var(&philo->table->status, &philo->table->smutex))
+				return (NULL);
+		while (take_fork(philo, philo->table->nphilos == philo->id))
+			if (get_var(&philo->table->status, &philo->table->smutex))
+				return (NULL);
+		ph_eat(philo);
+		if (get_var(&philo->table->status, &philo->table->smutex))
+			return (NULL);
+		ph_sleep(philo);
+		if (get_var(&philo->table->status, &philo->table->smutex))
+			return (NULL);
+		print_status(philo->table, philo->id, 't');
+	}
+	return (NULL);
+}

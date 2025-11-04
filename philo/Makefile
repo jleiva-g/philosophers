@@ -1,5 +1,5 @@
 NAME		= philo
-SRC_FILES	= main.c init.c utils.c
+SRC_FILES	= main.c init.c utils.c checker.c routine.c
 SRC_DIR		= src
 SRC			= $(addprefix $(SRC_DIR)/, $(SRC_FILES))
 OBJ_DIR		= $(SRC_DIR)/obj
@@ -19,11 +19,11 @@ $(OBJ_DIR):
 	@mkdir -p $@
 
 clean:
-	@rm -rf $(OBJ) $(BONUS_OBJ)
+	@rm -rf $(OBJ)
 
 fclean: clean
-	@rm -rf $(NAME) $(BONUS_NAME)
+	@rm -rf $(NAME)
 
-re: fclean all bonus
+re: fclean all
 
 .PHONY: all clean fclean re

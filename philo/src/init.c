@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 19:40:45 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/10/31 18:45:17 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/11/04 01:08:32 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,20 +43,21 @@ static int	init_philos(t_table *table)
 	{
 		table->philos[i].id = i + 1;
 		table->philos[i].table = table;
-		// table->philos[i].last_meal = get_time(table->stime);
+		table->philos[i].last_meal = 0;
 		table->philos[i].meals = 0;
 		if (!i)
 			table->philos[i].left_fork = &table->forks[table->nphilos - 1];
+		else
+			table->philos[i].left_fork = &table->forks[i - 1];
 		table->philos[i].right_fork = &table->forks[i];
-		pthread_mutex_init(&table->philos[i].mutex, NULL);
+		pthread_mutex_init(&table->philos[i].lmutex, NULL);
+		pthread_mutex_init(&table->philos[i].mmutex, NULL);
 	}
 	return (0);
 }
 
 static int	init_threads(t_table *table)
 {
-	int	i;
-
 	table->threads = malloc(sizeof(pthread_t) * table->nphilos);
 	if (!table->threads)
 	{
@@ -64,16 +65,12 @@ static int	init_threads(t_table *table)
 		free(table->philos);
 		return (1);
 	}
-	i = -1;
-	// while (++i < table->nphilos)
-	// 	pthread_create();
 	return (0);
 }
 
 int	init(t_table *table, int argc, char **argv)
 {
 	table->nphilos = ft_atol(argv[1]);
-	table->stime = get_time(0);
 	table->tdie = ft_atol(argv[2]);
 	table->teat = ft_atol(argv[3]);
 	table->tsleep = ft_atol(argv[4]);
@@ -86,7 +83,8 @@ int	init(t_table *table, int argc, char **argv)
 		return (1);
 	if (init_philos(table))
 		return (1);
-	pthread_mutex_init(&table->mutex, NULL);
+	pthread_mutex_init(&table->smutex, NULL);
+	pthread_mutex_init(&table->wmutex, NULL);
 	if (init_threads(table))
 		return (1);
 	return (0);
