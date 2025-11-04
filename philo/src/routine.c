@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/31 17:34:41 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/11/04 01:33:24 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/11/04 01:39:22 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,12 @@ static void	ph_eat(t_philo *philo)
 	pthread_mutex_lock(&philo->mmutex);
 	philo->meals++;
 	pthread_mutex_unlock(&philo->mmutex);
+	pthread_mutex_lock(&philo->left_fork->mutex);
+	philo->left_fork->is_taken = 0;
+	pthread_mutex_unlock(&philo->left_fork->mutex);
+	pthread_mutex_lock(&philo->right_fork->mutex);
+	philo->right_fork->is_taken = 0;
+	pthread_mutex_unlock(&philo->right_fork->mutex);
 }
 
 static void	ph_sleep(t_philo *philo)
