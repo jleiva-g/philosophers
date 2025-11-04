@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 16:06:25 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/11/04 01:03:51 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/11/04 01:40:52 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	main(int argc, char **argv)
 	t_table	table;
 	int		i;
 
-	if (argc < 4 || argc > 5)
+	if (argc < 5 || argc > 6)
 		return (1);
 	if (init(&table, argc, argv))
 		return (1);
