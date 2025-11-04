@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/31 17:34:41 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/11/04 01:39:22 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/11/04 19:28:31 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,13 +47,24 @@ static int	take_fork(t_philo *philo, int side)
 
 static void	ph_eat(t_philo *philo)
 {
-	print_status(philo->table, philo->id, 'e');
+	long	time;
+
 	pthread_mutex_lock(&philo->lmutex);
-	philo->last_meal = get_time(philo->table->stime);
+	time = get_time(philo->table->stime);
+	if (time - philo->last_meal <= philo->table->tdie)
+		philo->last_meal = time;
+	else
+	{
+		pthread_mutex_unlock(&philo->lmutex);
+		usleep(1000);
+		return ;
+	}
 	pthread_mutex_unlock(&philo->lmutex);
+	print_status(philo->table, philo->id, 'e');
 	usleep(philo->table->teat * 1000);
 	pthread_mutex_lock(&philo->mmutex);
-	philo->meals++;
+	if (philo->meals > -1)
+		philo->meals++;
 	pthread_mutex_unlock(&philo->mmutex);
 	pthread_mutex_lock(&philo->left_fork->mutex);
 	philo->left_fork->is_taken = 0;
