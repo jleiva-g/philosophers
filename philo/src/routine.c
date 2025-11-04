@@ -6,11 +6,21 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/31 17:34:41 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/11/04 01:19:13 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/11/04 01:33:24 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/philo.h"
+
+static int	get_status(t_table *table)
+{
+	int	status;
+
+	pthread_mutex_lock(&table->smutex);
+	status = table->status;
+	pthread_mutex_unlock(&table->smutex);
+	return (status);
+}
 
 static int	take_fork(t_philo *philo, int side)
 {
@@ -63,19 +73,19 @@ void	*routine(void *param)
 		print_status(philo->table, philo->id, 't');
 		usleep(500);
 	}
-	while (!get_var(&philo->table->status, &philo->table->smutex))
+	while (!get_status(philo->table))
 	{
 		while (take_fork(philo, philo->table->nphilos != philo->id))
-			if (get_var(&philo->table->status, &philo->table->smutex))
+			if (get_status(philo->table))
 				return (NULL);
 		while (take_fork(philo, philo->table->nphilos == philo->id))
-			if (get_var(&philo->table->status, &philo->table->smutex))
+			if (get_status(philo->table))
 				return (NULL);
 		ph_eat(philo);
-		if (get_var(&philo->table->status, &philo->table->smutex))
+		if (get_status(philo->table))
 			return (NULL);
 		ph_sleep(philo);
-		if (get_var(&philo->table->status, &philo->table->smutex))
+		if (get_status(philo->table))
 			return (NULL);
 		print_status(philo->table, philo->id, 't');
 	}

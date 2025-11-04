@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 16:07:29 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/11/03 23:45:34 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/11/04 01:26:57 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,8 +56,6 @@ typedef struct s_table
 // utils
 long	ft_atol(char *nptr);
 long	get_time(long time);
-long	get_var(void *var, pthread_mutex_t *mutex);
-void	set_var(void *var, pthread_mutex_t *mutex, long new_value);
 void	print_status(t_table *table, int philo, char mode);
 // init
 int		init(t_table *table, int argc, char **argv);
