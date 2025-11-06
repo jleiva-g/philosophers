@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/31 17:34:41 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/11/04 19:28:31 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/11/06 18:15:15 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ static int	take_fork(t_philo *philo, int side)
 	if (fork->is_taken)
 	{
 		pthread_mutex_unlock(&fork->mutex);
+		usleep(1000);
 		return (1);
 	}
 	else
