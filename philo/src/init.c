@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 19:40:45 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/11/07 17:51:58 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/11/07 18:05:58 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,12 +76,7 @@ static int	init_threads(t_table *table)
 {
 	table->threads = malloc(sizeof(pthread_t) * table->nphilos);
 	if (!table->threads)
-	{
-		destroy_forks_mutex(table, table->nphilos);
-		free(table->forks);
-		free(table->philos);
-		return (1);
-	}
+		return (free_return(table, 1));
 	return (0);
 }
 
