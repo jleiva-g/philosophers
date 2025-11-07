@@ -1,34 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   cleanup.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/22 16:06:25 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/11/07 17:07:57 by jleiva-g         ###   ########.fr       */
+/*   Created: 2025/11/07 16:27:44 by jleiva-g          #+#    #+#             */
+/*   Updated: 2025/11/07 17:29:51 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/philo.h"
 
-int	main(int argc, char **argv)
+void	cleanup(t_table *table)
 {
-	t_table	table;
-	int		i;
+	int	i;
 
-	if (argc < 5 || argc > 6)
-		return (1);
-	if (init(&table, argc, argv))
-		return (1);
-	table.stime = get_time(0);
+	pthread_mutex_destroy(&table->smutex);
+	pthread_mutex_destroy(&table->wmutex);
 	i = -1;
-	while (++i < table.nphilos)
-		pthread_create(&table.threads[i], NULL, &routine, &table.philos[i]);
-	checker(&table);
-	i = -1;
-	while (++i < table.nphilos)
-		pthread_join(table.threads[i], NULL);
-	cleanup(&table);
-	return (0);
+	while (++i < table->nphilos)
+	{
+		pthread_mutex_destroy(&table->forks[i].mutex);
+		pthread_mutex_destroy(&table->philos[i].lmutex);
+		pthread_mutex_destroy(&table->philos[i].mmutex);
+	}
+	free(table->forks);
+	free(table->philos);
+	free(table->threads);
 }

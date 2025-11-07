@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 16:07:29 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/11/04 01:26:57 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/11/07 17:07:53 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,5 +63,7 @@ int		init(t_table *table, int argc, char **argv);
 void	*routine(void *param);
 // checker
 void	checker(t_table *table);
+// cleanup
+void	cleanup(t_table *table);
 
 #endif
