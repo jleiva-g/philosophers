@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 16:27:44 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/11/07 17:53:51 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/11/07 18:09:48 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,9 @@ int	free_return(t_table *table, int mode)
 	return (1);
 }
 
-void	cleanup(t_table *table)
+int	cleanup(t_table *table)
 {
 	free_return(table, 1);
 	free(table->threads);
+	return (1);
 }
