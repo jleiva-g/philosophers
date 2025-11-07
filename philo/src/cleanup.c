@@ -6,26 +6,45 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 16:27:44 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/11/07 17:29:51 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/11/07 17:53:51 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/philo.h"
 
-void	cleanup(t_table *table)
+int	destroy_forks_mutex(t_table *table, int i)
 {
-	int	i;
-
-	pthread_mutex_destroy(&table->smutex);
-	pthread_mutex_destroy(&table->wmutex);
-	i = -1;
-	while (++i < table->nphilos)
-	{
+	while (i--)
 		pthread_mutex_destroy(&table->forks[i].mutex);
+	return (1);
+}
+
+int	destroy_philos_mutex(t_table *table, int i, int mode)
+{
+	if (mode)
+		pthread_mutex_destroy(&table->philos[i].lmutex);
+	while (i--)
+	{
 		pthread_mutex_destroy(&table->philos[i].lmutex);
 		pthread_mutex_destroy(&table->philos[i].mmutex);
 	}
+	return (1);
+}
+
+int	free_return(t_table *table, int mode)
+{
+	destroy_forks_mutex(table, table->nphilos);
 	free(table->forks);
-	free(table->philos);
+	if (mode)
+	{
+		destroy_philos_mutex(table, table->nphilos, 0);
+		free(table->philos);
+	}
+	return (1);
+}
+
+void	cleanup(t_table *table)
+{
+	free_return(table, 1);
 	free(table->threads);
 }

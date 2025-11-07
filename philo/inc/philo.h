@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 16:07:29 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/11/07 17:07:53 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/11/07 17:54:38 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,9 @@ void	*routine(void *param);
 // checker
 void	checker(t_table *table);
 // cleanup
+int		destroy_forks_mutex(t_table *table, int i);
+int		destroy_philos_mutex(t_table *table, int i, int mode);
+int		free_return(t_table *table, int mode);
 void	cleanup(t_table *table);
 
 #endif

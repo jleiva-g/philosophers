@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 19:40:45 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/11/04 19:44:21 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/11/07 17:51:58 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,8 @@ static int	init_forks(t_table *table)
 	while (++i < table->nphilos)
 	{
 		table->forks[i].is_taken = 0;
-		pthread_mutex_init(&table->forks[i].mutex, NULL);
+		if (pthread_mutex_init(&table->forks[i].mutex, NULL))
+			return (destroy_forks_mutex(table, i));
 	}
 	return (0);
 }
@@ -50,10 +51,7 @@ static int	init_philos(t_table *table)
 
 	table->philos = malloc(sizeof(t_philo) * table->nphilos);
 	if (!table->philos)
-	{
-		free(table->forks);
-		return (1);
-	}
+		return (free_return(table, 0));
 	i = -1;
 	while (++i < table->nphilos)
 	{
@@ -66,8 +64,10 @@ static int	init_philos(t_table *table)
 		else
 			table->philos[i].left_fork = &table->forks[i - 1];
 		table->philos[i].right_fork = &table->forks[i];
-		pthread_mutex_init(&table->philos[i].lmutex, NULL);
-		pthread_mutex_init(&table->philos[i].mmutex, NULL);
+		if (pthread_mutex_init(&table->philos[i].lmutex, NULL))
+			return (destroy_philos_mutex(table, i, 0));
+		if (pthread_mutex_init(&table->philos[i].mmutex, NULL))
+			return (destroy_philos_mutex(table, i, 1));
 	}
 	return (0);
 }
@@ -77,6 +77,7 @@ static int	init_threads(t_table *table)
 	table->threads = malloc(sizeof(pthread_t) * table->nphilos);
 	if (!table->threads)
 	{
+		destroy_forks_mutex(table, table->nphilos);
 		free(table->forks);
 		free(table->philos);
 		return (1);
