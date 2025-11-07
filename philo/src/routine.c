@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/31 17:34:41 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/11/06 18:15:15 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/11/07 16:43:11 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,8 @@ static int	take_fork(t_philo *philo, int side)
 	}
 	else
 	{
-		pthread_mutex_unlock(&fork->mutex);
 		fork->is_taken = 1;
+		pthread_mutex_unlock(&fork->mutex);
 		print_status(philo->table, philo->id, 'f');
 		return (0);
 	}
