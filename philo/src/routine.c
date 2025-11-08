@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/31 17:34:41 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/11/07 16:43:11 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/11/08 02:54:46 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@ static int	take_fork(t_philo *philo, int side)
 {
 	t_fork	*fork;
 
+	if (get_status(philo->table))
+		return (0);
 	if (side)
 		fork = philo->left_fork;
 	else
@@ -46,7 +48,7 @@ static int	take_fork(t_philo *philo, int side)
 	}
 }
 
-static void	ph_eat(t_philo *philo)
+static int	ph_eat(t_philo *philo)
 {
 	long	time;
 
@@ -57,8 +59,7 @@ static void	ph_eat(t_philo *philo)
 	else
 	{
 		pthread_mutex_unlock(&philo->lmutex);
-		usleep(1000);
-		return ;
+		return (1);
 	}
 	pthread_mutex_unlock(&philo->lmutex);
 	print_status(philo->table, philo->id, 'e');
@@ -73,12 +74,13 @@ static void	ph_eat(t_philo *philo)
 	pthread_mutex_lock(&philo->right_fork->mutex);
 	philo->right_fork->is_taken = 0;
 	pthread_mutex_unlock(&philo->right_fork->mutex);
+	return (0);
 }
 
-static void	ph_sleep(t_philo *philo)
+static void	start_thinking(t_philo *philo)
 {
-	print_status(philo->table, philo->id, 's');
-	usleep(philo->table->tsleep * 1000);
+	print_status(philo->table, philo->id, 't');
+	usleep(500);
 }
 
 void	*routine(void *param)
@@ -87,22 +89,19 @@ void	*routine(void *param)
 
 	philo = (t_philo *) param;
 	if (!(philo->id % 2))
-	{
-		print_status(philo->table, philo->id, 't');
-		usleep(500);
-	}
+		start_thinking(philo);
 	while (!get_status(philo->table))
 	{
 		while (take_fork(philo, philo->table->nphilos != philo->id))
-			if (get_status(philo->table))
-				return (NULL);
+			;
 		while (take_fork(philo, philo->table->nphilos == philo->id))
-			if (get_status(philo->table))
-				return (NULL);
-		ph_eat(philo);
+			;
 		if (get_status(philo->table))
 			return (NULL);
-		ph_sleep(philo);
+		if (ph_eat(philo) || get_status(philo->table))
+			return (NULL);
+		print_status(philo->table, philo->id, 's');
+		usleep(philo->table->tsleep * 1000);
 		if (get_status(philo->table))
 			return (NULL);
 		print_status(philo->table, philo->id, 't');
