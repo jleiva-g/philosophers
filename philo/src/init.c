@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 19:40:45 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/11/07 18:05:58 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/11/09 05:40:19 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ static int	init_philos(t_table *table)
 
 	table->philos = malloc(sizeof(t_philo) * table->nphilos);
 	if (!table->philos)
-		return (free_return(table, 0));
+		return (1);
 	i = -1;
 	while (++i < table->nphilos)
 	{
@@ -76,7 +76,7 @@ static int	init_threads(t_table *table)
 {
 	table->threads = malloc(sizeof(pthread_t) * table->nphilos);
 	if (!table->threads)
-		return (free_return(table, 1));
+		return (1);
 	return (0);
 }
 
@@ -99,10 +99,12 @@ int	init(t_table *table, int argc, char **argv)
 	if (init_forks(table))
 		return (1);
 	if (init_philos(table))
-		return (1);
-	pthread_mutex_init(&table->smutex, NULL);
-	pthread_mutex_init(&table->wmutex, NULL);
+		return (free_return(table, 0));
+	if (pthread_mutex_init(&table->smutex, NULL))
+		return (free_return(table, 1));
+	if (pthread_mutex_init(&table->wmutex, NULL))
+		return (free_return(table, 2));
 	if (init_threads(table))
-		return (1);
+		return (free_return(table, 3));
 	return (0);
 }

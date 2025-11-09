@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 16:27:44 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/11/07 18:09:48 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/11/09 05:41:38 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,10 @@ int	free_return(t_table *table, int mode)
 		destroy_philos_mutex(table, table->nphilos, 0);
 		free(table->philos);
 	}
+	if (mode > 1)
+		pthread_mutex_destroy(&table->smutex);
+	if (mode > 2)
+		pthread_mutex_destroy(&table->wmutex);
 	return (1);
 }
 
