@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/31 17:34:39 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/11/08 04:25:06 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/11/09 04:12:31 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,19 +39,28 @@ static void	*check_meals(void *param)
 	return (NULL);
 }
 
-void	checker(t_table *table)
+static void	create_threads(t_table *table)
 {
-	int	status;
-	int	i;
-
 	if (pthread_create(&table->death_checker, NULL, &check_death, table))
+	{
 		cleanup(table);
+		exit(1);
+	}
 	if (pthread_create(&table->meals_checker, NULL, &check_meals, table))
 	{
 		sem_post(table->death_sem);
 		pthread_join(&table->death_checker, NULL);
 		cleanup(table);
+		exit(1);
 	}
+}
+
+void	checker(t_table *table)
+{
+	int	status;
+	int	i;
+
+	create_threads(table);
 	status = 1;
 	while (status)
 	{
