@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/31 17:34:41 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/11/09 04:39:01 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/11/09 14:57:22 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,11 @@ static void	check_termination(t_philo *philo)
 {
 	int	status;
 
-	if (get_time(philo->table->stime) - philo->last_meal <= philo->table->tdie)
+	if (get_time(philo->table->stime) - philo->last_meal > philo->table->tdie)
 	{
 		print_status(philo->table, philo->id, 'd');
 		sem_post(philo->table->death_sem);
-		pthread_join(&philo->table->sigterm_checker, NULL);
+		pthread_join(philo->table->sigterm_checker, NULL);
 		child_cleanup(philo->table);
 		exit(1);
 	}
@@ -41,7 +41,7 @@ static void	check_termination(t_philo *philo)
 	pthread_mutex_unlock(&philo->table->mutex);
 	if (!status)
 	{
-		pthread_join(&philo->table->sigterm_checker, NULL);
+		pthread_join(philo->table->sigterm_checker, NULL);
 		child_cleanup(philo->table);
 		exit(0);
 	}

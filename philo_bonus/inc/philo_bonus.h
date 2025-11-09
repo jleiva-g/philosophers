@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 16:07:29 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/11/09 04:23:27 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/11/09 14:55:58 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,6 @@ void	checker(t_table *table);
 // cleanup
 void	wait_children(t_table *table, int nmemb);
 void	clear_sem(t_table *table, int mode);
-int		cleanup(t_table *table);
+void	cleanup(t_table *table);
 
 #endif
