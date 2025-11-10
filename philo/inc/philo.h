@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 16:07:29 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/11/07 18:09:29 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/11/10 19:36:57 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 typedef struct s_fork
 {
 	int				is_taken;
-	pthread_mutex_t	mutex;
+	pthread_mutex_t	*mutex;
 }	t_fork;
 
 typedef struct s_philo
@@ -33,8 +33,8 @@ typedef struct s_philo
 	long			meals;
 	struct s_fork	*left_fork;
 	struct s_fork	*right_fork;
-	pthread_mutex_t	lmutex;
-	pthread_mutex_t	mmutex;
+	pthread_mutex_t	*lmutex;
+	pthread_mutex_t	*mmutex;
 }	t_philo;
 
 typedef struct s_table
@@ -49,11 +49,12 @@ typedef struct s_table
 	pthread_t		*threads;
 	struct s_philo	*philos;
 	struct s_fork	*forks;
-	pthread_mutex_t	smutex;
-	pthread_mutex_t	wmutex;
+	pthread_mutex_t	*smutex;
+	pthread_mutex_t	*wmutex;
 }	t_table;
 
 // utils
+int		check_input(char **argv);
 long	ft_atol(char *nptr);
 long	get_time(long time);
 void	print_status(t_table *table, int philo, char mode);
@@ -64,7 +65,7 @@ void	*routine(void *param);
 // checker
 void	checker(t_table *table);
 // cleanup
-int		destroy_forks_mutex(t_table *table, int i);
+int		destroy_forks_mutex(t_table *table, int i, int mode);
 int		destroy_philos_mutex(t_table *table, int i, int mode);
 int		free_return(t_table *table, int mode);
 int		cleanup(t_table *table);

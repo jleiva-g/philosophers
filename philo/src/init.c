@@ -6,42 +6,53 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 19:40:45 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/11/09 05:40:19 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/11/10 19:36:36 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/philo.h"
 
-static int	check_input(char **argv)
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	while (argv[++i])
-	{
-		j = -1;
-		while (argv[i][++j])
-			if (argv[i][j] < '0' || argv[i][j] > '9')
-				return (1);
-	}
-	return (0);
-}
-
 static int	init_forks(t_table *table)
 {
 	int	i;
 
-	table->forks = malloc(sizeof(t_fork) * table->nphilos);
+	table->forks = malloc(table->nphilos * sizeof(t_fork));
 	if (!table->forks)
 		return (1);
 	i = -1;
 	while (++i < table->nphilos)
 	{
 		table->forks[i].is_taken = 0;
-		if (pthread_mutex_init(&table->forks[i].mutex, NULL))
-			return (destroy_forks_mutex(table, i));
+		table->forks[i].mutex = malloc(sizeof(pthread_mutex_t));
+		if (!table->forks[i].mutex)
+			return (destroy_forks_mutex(table, i, 0));
+		if (pthread_mutex_init(table->forks[i].mutex, NULL))
+			return (destroy_forks_mutex(table, i, 1));
 	}
+	return (0);
+}
+
+static int	init_single_philo(t_table *table, int id)
+{
+	table->philos[id].id = id + 1;
+	table->philos[id].table = table;
+	table->philos[id].last_meal = 0;
+	table->philos[id].meals = 0;
+	if (!id)
+		table->philos[id].left_fork = &table->forks[table->nphilos - 1];
+	else
+		table->philos[id].left_fork = &table->forks[id - 1];
+	table->philos[id].right_fork = &table->forks[id];
+	table->philos[id].lmutex = malloc(sizeof(pthread_mutex_t));
+	if (!table->philos[id].lmutex)
+		return (destroy_forks_mutex(table, id, 0));
+	if (pthread_mutex_init(table->philos[id].lmutex, NULL))
+		return (destroy_philos_mutex(table, id, 1));
+	table->philos[id].mmutex = malloc(sizeof(pthread_mutex_t));
+	if (!table->philos[id].mmutex)
+		return (destroy_forks_mutex(table, id, 2));
+	if (pthread_mutex_init(table->philos[id].mmutex, NULL))
+		return (destroy_philos_mutex(table, id, 3));
 	return (0);
 }
 
@@ -49,34 +60,35 @@ static int	init_philos(t_table *table)
 {
 	int	i;
 
-	table->philos = malloc(sizeof(t_philo) * table->nphilos);
+	table->philos = malloc(table->nphilos * sizeof(t_philo));
 	if (!table->philos)
 		return (1);
 	i = -1;
 	while (++i < table->nphilos)
-	{
-		table->philos[i].id = i + 1;
-		table->philos[i].table = table;
-		table->philos[i].last_meal = 0;
-		table->philos[i].meals = 0;
-		if (!i)
-			table->philos[i].left_fork = &table->forks[table->nphilos - 1];
-		else
-			table->philos[i].left_fork = &table->forks[i - 1];
-		table->philos[i].right_fork = &table->forks[i];
-		if (pthread_mutex_init(&table->philos[i].lmutex, NULL))
-			return (destroy_philos_mutex(table, i, 0));
-		if (pthread_mutex_init(&table->philos[i].mmutex, NULL))
-			return (destroy_philos_mutex(table, i, 1));
-	}
+		if (init_single_philo(table, i))
+			return (1);
 	return (0);
 }
 
-static int	init_threads(t_table *table)
+static int	init_allocs(t_table *table)
 {
-	table->threads = malloc(sizeof(pthread_t) * table->nphilos);
-	if (!table->threads)
+	if (init_forks(table))
 		return (1);
+	if (init_philos(table))
+		return (free_return(table, 0));
+	table->smutex = malloc(sizeof(pthread_mutex_t));
+	if (!table->smutex)
+		return (free_return(table, 1));
+	if (pthread_mutex_init(table->smutex, NULL))
+		return (free_return(table, 2));
+	table->wmutex = malloc(sizeof(pthread_mutex_t));
+	if (!table->wmutex)
+		return (free_return(table, 3));
+	if (pthread_mutex_init(table->wmutex, NULL))
+		return (free_return(table, 4));
+	table->threads = malloc(table->nphilos * sizeof(pthread_t));
+	if (!table->threads)
+		return (free_return(table, 5));
 	return (0);
 }
 
@@ -96,15 +108,7 @@ int	init(t_table *table, int argc, char **argv)
 	else
 		table->max_meals = -1;
 	table->status = 0;
-	if (init_forks(table))
+	if (init_allocs(table))
 		return (1);
-	if (init_philos(table))
-		return (free_return(table, 0));
-	if (pthread_mutex_init(&table->smutex, NULL))
-		return (free_return(table, 1));
-	if (pthread_mutex_init(&table->wmutex, NULL))
-		return (free_return(table, 2));
-	if (init_threads(table))
-		return (free_return(table, 3));
 	return (0);
 }
