@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 16:27:44 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/11/09 04:08:18 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/11/10 20:31:55 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,11 +52,25 @@ void	clear_sem(t_table *table, int mode)
 		exit(1);
 }
 
+void	free_exit(t_table *table, int mode)
+{
+	clear_sem(table, 4);
+	free(table->philos);
+	if (mode > 1)
+		pthread_mutex_destroy(table->mutex);
+	if (mode)
+		free(table->mutex);
+	if (mode > 2)
+		free(table->children);
+	exit(1);
+}
+
 void	cleanup(t_table *table)
 {
 	wait_children(table, table->nphilos);
 	clear_sem(table, 4);
 	free(table->philos);
-	pthread_mutex_destroy(&table->mutex);
+	pthread_mutex_destroy(table->mutex);
+	free(table->mutex);
 	free(table->children);
 }

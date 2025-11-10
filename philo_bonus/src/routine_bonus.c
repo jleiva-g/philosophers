@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/31 17:34:41 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/11/09 14:57:22 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/11/10 20:31:38 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@ static void	child_cleanup(t_table *table)
 	sem_close(table->print_sem);
 	sem_close(table->sigterm_sem);
 	free(table->philos);
-	pthread_mutex_destroy(&table->mutex);
+	pthread_mutex_destroy(table->mutex);
+	free(table->mutex);
 	free(table->children);
 }
 
@@ -36,9 +37,9 @@ static void	check_termination(t_philo *philo)
 		child_cleanup(philo->table);
 		exit(1);
 	}
-	pthread_mutex_lock(&philo->table->mutex);
+	pthread_mutex_lock(philo->table->mutex);
 	status = philo->table->status;
-	pthread_mutex_unlock(&philo->table->mutex);
+	pthread_mutex_unlock(philo->table->mutex);
 	if (!status)
 	{
 		pthread_join(philo->table->sigterm_checker, NULL);
@@ -78,9 +79,9 @@ static void	*check_sigterm(void *param)
 
 	table = (t_table *) param;
 	sem_wait(table->sigterm_sem);
-	pthread_mutex_lock(&table->mutex);
+	pthread_mutex_lock(table->mutex);
 	table->status = 0;
-	pthread_mutex_unlock(&table->mutex);
+	pthread_mutex_unlock(table->mutex);
 	return (NULL);
 }
 

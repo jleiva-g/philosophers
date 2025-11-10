@@ -6,26 +6,11 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 19:40:45 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/11/09 04:38:13 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/11/10 20:30:09 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/philo_bonus.h"
-
-static void	check_input(char **argv)
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	while (argv[++i])
-	{
-		j = -1;
-		while (argv[i][++j])
-			if (argv[i][j] < '0' || argv[i][j] > '9')
-				exit(1);
-	}
-}
 
 static void	init_sem(t_table *table)
 {
@@ -58,7 +43,7 @@ static void	init_philos(t_table *table)
 	table->philos = malloc(sizeof(t_philo) * table->nphilos);
 	if (!table->philos)
 	{
-		clear_sem(table, 3);
+		clear_sem(table, 4);
 		exit(1);
 	}
 	i = -1;
@@ -77,11 +62,7 @@ static void	init_children(t_table *table)
 
 	table->children = malloc(sizeof(t_philo) * table->nphilos);
 	if (!table->children)
-	{
-		clear_sem(table, 4);
-		free(table->philos);
-		exit(1);
-	}
+		free_exit(table, 2);
 	i = -1;
 	while (++i < table->nphilos)
 	{
@@ -91,11 +72,7 @@ static void	init_children(t_table *table)
 		else if (table->children[i] == -1)
 		{
 			wait_children(table, i);
-			clear_sem(table, 4);
-			free(table->philos);
-			pthread_mutex_destroy(&table->mutex);
-			free(table->children);
-			exit(1);
+			free_exit(table, 3);
 		}
 	}
 }
@@ -117,12 +94,11 @@ void	init(t_table *table, int argc, char **argv)
 	table->status = 1;
 	init_sem(table);
 	init_philos(table);
-	if (pthread_mutex_init(&table->mutex, NULL))
-	{
-		clear_sem(table, 4);
-		free(table->philos);
-		exit(1);
-	}
+	table->mutex = malloc(sizeof(pthread_mutex_t));
+	if (!table->mutex)
+		free_exit(table, 0);
+	if (pthread_mutex_init(table->mutex, NULL))
+		free_exit(table, 1);
 	table->stime = get_time(0);
 	init_children(table);
 }

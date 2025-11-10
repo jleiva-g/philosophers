@@ -6,11 +6,26 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 10:33:04 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/11/08 04:25:14 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/11/10 20:14:52 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/philo_bonus.h"
+
+void	check_input(char **argv)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	while (argv[++i])
+	{
+		j = -1;
+		while (argv[i][++j])
+			if (argv[i][j] < '0' || argv[i][j] > '9')
+				exit(1);
+	}
+}
 
 long	ft_atol(char *nptr)
 {

@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 16:07:29 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/11/09 14:55:58 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/11/10 20:26:13 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ typedef struct s_table
 	pthread_t		death_checker;
 	pthread_t		meals_checker;
 	pthread_t		sigterm_checker;
-	pthread_mutex_t	mutex;
+	pthread_mutex_t	*mutex;
 	sem_t			*forks_sem;
 	sem_t			*death_sem;
 	sem_t			*meals_sem;
@@ -55,6 +55,7 @@ typedef struct s_table
 }	t_table;
 
 // utils
+void	check_input(char **argv);
 long	ft_atol(char *nptr);
 long	get_time(long time);
 void	print_status(t_table *table, int philo, char mode);
@@ -67,6 +68,7 @@ void	checker(t_table *table);
 // cleanup
 void	wait_children(t_table *table, int nmemb);
 void	clear_sem(t_table *table, int mode);
+void	free_exit(t_table *table, int mode);
 void	cleanup(t_table *table);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/31 17:34:39 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/11/09 14:55:27 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/11/10 20:30:43 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,9 @@ static void	*check_death(void *param)
 
 	table = (t_table *) param;
 	sem_wait(table->death_sem);
-	pthread_mutex_lock(&table->mutex);
+	pthread_mutex_lock(table->mutex);
 	table->status = 0;
-	pthread_mutex_unlock(&table->mutex);
+	pthread_mutex_unlock(table->mutex);
 	return (NULL);
 }
 
@@ -33,9 +33,9 @@ static void	*check_meals(void *param)
 	i = -1;
 	while (++i < table->nphilos)
 		sem_wait(table->meals_sem);
-	pthread_mutex_lock(&table->mutex);
+	pthread_mutex_lock(table->mutex);
 	table->status = 0;
-	pthread_mutex_unlock(&table->mutex);
+	pthread_mutex_unlock(table->mutex);
 	return (NULL);
 }
 
@@ -64,9 +64,9 @@ void	checker(t_table *table)
 	status = 1;
 	while (status)
 	{
-		pthread_mutex_lock(&table->mutex);
+		pthread_mutex_lock(table->mutex);
 		status = table->status;
-		pthread_mutex_unlock(&table->mutex);
+		pthread_mutex_unlock(table->mutex);
 		usleep(100);
 	}
 	sem_post(table->death_sem);
