@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 19:40:45 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/11/10 20:55:37 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/11/12 16:03:37 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,20 +19,20 @@ static void	init_sem(t_table *table)
 	sem_unlink("/meals");
 	sem_unlink("/print");
 	sem_unlink("/sigterm");
-	table->forks_sem = sem_open("/fork", O_CREAT, S_IRWXU, table->nphilos);
-	if (!table->forks_sem)
+	table->forks_sem = sem_open("/fork", O_CREAT, 0644, table->nphilos);
+	if (table->forks_sem == SEM_FAILED)
 		exit(1);
-	table->death_sem = sem_open("/death", O_CREAT, S_IRWXU, 0);
-	if (!table->death_sem)
+	table->death_sem = sem_open("/death", O_CREAT, 0644, 0);
+	if (table->death_sem == SEM_FAILED)
 		clear_sem(table, 0);
-	table->meals_sem = sem_open("/meals", O_CREAT, S_IRWXU, 0);
-	if (!table->meals_sem)
+	table->meals_sem = sem_open("/meals", O_CREAT, 0644, 0);
+	if (table->meals_sem == SEM_FAILED)
 		clear_sem(table, 1);
-	table->print_sem = sem_open("/print", O_CREAT, S_IRWXU, 1);
-	if (!table->print_sem)
+	table->print_sem = sem_open("/print", O_CREAT, 0644, 1);
+	if (table->print_sem == SEM_FAILED)
 		clear_sem(table, 2);
-	table->sigterm_sem = sem_open("/sigterm", O_CREAT, S_IRWXU, 0);
-	if (!table->sigterm_sem)
+	table->sigterm_sem = sem_open("/sigterm", O_CREAT, 0644, 0);
+	if (table->sigterm_sem == SEM_FAILED)
 		clear_sem(table, 3);
 }
 
