@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/31 17:34:41 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/11/10 20:31:38 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/11/13 16:28:52 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,11 @@
 
 static void	child_cleanup(t_table *table)
 {
+	sem_post(table->forks_sem);
+	sem_post(table->forks_sem);
+	sem_post(table->plate_sem);
 	sem_close(table->forks_sem);
+	sem_close(table->plate_sem);
 	sem_close(table->death_sem);
 	sem_close(table->meals_sem);
 	sem_close(table->print_sem);
@@ -52,6 +56,7 @@ static void	routine(t_philo *philo)
 {
 	while (1)
 	{
+		sem_wait(philo->table->plate_sem);
 		sem_wait(philo->table->forks_sem);
 		check_termination(philo);
 		print_status(philo->table, philo->id, 'f');
@@ -65,6 +70,7 @@ static void	routine(t_philo *philo)
 			sem_post(philo->table->meals_sem);
 		sem_post(philo->table->forks_sem);
 		sem_post(philo->table->forks_sem);
+		sem_post(philo->table->plate_sem);
 		check_termination(philo);
 		print_status(philo->table, philo->id, 's');
 		usleep(philo->table->tsleep * 1000);

@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 16:07:29 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/11/10 20:26:13 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/11/13 15:48:22 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ typedef struct s_table
 	pthread_t		sigterm_checker;
 	pthread_mutex_t	*mutex;
 	sem_t			*forks_sem;
+	sem_t			*plate_sem;
 	sem_t			*death_sem;
 	sem_t			*meals_sem;
 	sem_t			*print_sem;
