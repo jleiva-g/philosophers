@@ -6,47 +6,23 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/31 17:34:41 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/11/13 16:28:52 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/11/13 18:47:05 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/philo_bonus.h"
 
-static void	child_cleanup(t_table *table)
-{
-	sem_post(table->forks_sem);
-	sem_post(table->forks_sem);
-	sem_post(table->plate_sem);
-	sem_close(table->forks_sem);
-	sem_close(table->plate_sem);
-	sem_close(table->death_sem);
-	sem_close(table->meals_sem);
-	sem_close(table->print_sem);
-	sem_close(table->sigterm_sem);
-	free(table->philos);
-	pthread_mutex_destroy(table->mutex);
-	free(table->mutex);
-	free(table->children);
-}
-
 static void	check_termination(t_philo *philo)
 {
 	int	status;
 
-	if (get_time(philo->table->stime) - philo->last_meal > philo->table->tdie)
-	{
-		print_status(philo->table, philo->id, 'd');
-		sem_post(philo->table->death_sem);
-		pthread_join(philo->table->sigterm_checker, NULL);
-		child_cleanup(philo->table);
-		exit(1);
-	}
 	pthread_mutex_lock(philo->table->mutex);
 	status = philo->table->status;
 	pthread_mutex_unlock(philo->table->mutex);
 	if (!status)
 	{
-		pthread_join(philo->table->sigterm_checker, NULL);
+		pthread_join(philo->death_checker, NULL);
+		pthread_join(philo->sigterm_checker, NULL);
 		child_cleanup(philo->table);
 		exit(0);
 	}
@@ -79,6 +55,31 @@ static void	routine(t_philo *philo)
 	}
 }
 
+static void	*check_death(void *param)
+{
+	t_philo	*philo;
+	int		status;
+
+	philo = (t_philo *) param;
+	status = 1;
+	while (status)
+	{
+		if (get_time(philo->table->stime) - philo->last_meal
+			> philo->table->tdie)
+		{
+			print_status(philo->table, philo->id, 'd');
+			pthread_mutex_lock(philo->table->mutex);
+			philo->table->status = 0;
+			pthread_mutex_unlock(philo->table->mutex);
+		}
+		pthread_mutex_lock(philo->table->mutex);
+		status = philo->table->status;
+		pthread_mutex_unlock(philo->table->mutex);
+		usleep(1000);
+	}
+	return (NULL);
+}
+
 static void	*check_sigterm(void *param)
 {
 	t_table	*table;
@@ -93,10 +94,20 @@ static void	*check_sigterm(void *param)
 
 void	start_routine(t_philo *philo)
 {
-	if (pthread_create(&philo->table->sigterm_checker, NULL, &check_sigterm,
+	if (pthread_create(&philo->death_checker, NULL, &check_death, philo))
+	{
+		sem_post(philo->table->death_sem);
+		child_cleanup(philo->table);
+		exit(1);
+	}
+	if (pthread_create(&philo->sigterm_checker, NULL, &check_sigterm,
 			philo->table))
 	{
 		sem_post(philo->table->death_sem);
+		pthread_mutex_lock(philo->table->mutex);
+		philo->table->status = 0;
+		pthread_mutex_unlock(philo->table->mutex);
+		pthread_join(philo->death_checker, NULL);
 		child_cleanup(philo->table);
 		exit(1);
 	}

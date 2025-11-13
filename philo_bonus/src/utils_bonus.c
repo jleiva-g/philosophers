@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 10:33:04 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/11/13 16:15:11 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/11/13 17:34:37 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,4 +66,21 @@ void	print_status(t_table *table, int philo, char mode)
 	sem_wait(table->print_sem);
 	printf("%s%06li %i %s\n", str, get_time(table->stime), philo, str + 6);
 	sem_post(table->print_sem);
+}
+
+void	child_cleanup(t_table *table)
+{
+	sem_post(table->forks_sem);
+	sem_post(table->forks_sem);
+	sem_post(table->plate_sem);
+	sem_close(table->forks_sem);
+	sem_close(table->plate_sem);
+	sem_close(table->death_sem);
+	sem_close(table->meals_sem);
+	sem_close(table->print_sem);
+	sem_close(table->sigterm_sem);
+	free(table->philos);
+	pthread_mutex_destroy(table->mutex);
+	free(table->mutex);
+	free(table->children);
 }
