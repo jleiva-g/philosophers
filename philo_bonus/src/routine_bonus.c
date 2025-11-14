@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/31 17:34:41 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/11/13 18:47:05 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/11/14 18:54:50 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ static void	*check_death(void *param)
 			pthread_mutex_lock(philo->table->mutex);
 			philo->table->status = 0;
 			pthread_mutex_unlock(philo->table->mutex);
+			sem_post(philo->table->death_sem);
 		}
 		pthread_mutex_lock(philo->table->mutex);
 		status = philo->table->status;
