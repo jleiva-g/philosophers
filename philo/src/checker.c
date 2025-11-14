@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/31 17:34:39 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/11/10 13:09:22 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/11/14 18:43:54 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ static int	check_max_meals(t_philo *philo)
 	pthread_mutex_lock(philo->mmutex);
 	meals = philo->meals;
 	pthread_mutex_unlock(philo->mmutex);
-	if (philo->table->max_meals > -1 && philo->table->max_meals <= meals)
+	if (philo->table->max_meals <= meals)
 	{
 		pthread_mutex_lock(philo->mmutex);
 		philo->meals = -1;
@@ -67,12 +67,14 @@ void	checker(t_table *table)
 		{
 			if (check_last_meal(&table->philos[i]))
 				return ;
-			if (check_max_meals(&table->philos[i]))
-				max_eaten++;
-			if (max_eaten == table->nphilos)
+			if (table->max_meals > -1 && check_max_meals(&table->philos[i]))
 			{
-				set_status(table, -1);
-				return ;
+				max_eaten++;
+				if (max_eaten == table->nphilos)
+				{
+					set_status(table, -1);
+					return ;
+				}
 			}
 		}
 		usleep(100);

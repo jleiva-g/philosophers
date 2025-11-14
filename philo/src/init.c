@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 19:40:45 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/11/10 19:36:36 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/11/14 16:07:22 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,27 +32,27 @@ static int	init_forks(t_table *table)
 	return (0);
 }
 
-static int	init_single_philo(t_table *table, int id)
+static int	init_single_philo(t_table *table, int pos)
 {
-	table->philos[id].id = id + 1;
-	table->philos[id].table = table;
-	table->philos[id].last_meal = 0;
-	table->philos[id].meals = 0;
-	if (!id)
-		table->philos[id].left_fork = &table->forks[table->nphilos - 1];
+	table->philos[pos].id = pos + 1;
+	table->philos[pos].table = table;
+	table->philos[pos].last_meal = 0;
+	table->philos[pos].meals = 0;
+	if (!pos)
+		table->philos[pos].left_fork = &table->forks[table->nphilos - 1];
 	else
-		table->philos[id].left_fork = &table->forks[id - 1];
-	table->philos[id].right_fork = &table->forks[id];
-	table->philos[id].lmutex = malloc(sizeof(pthread_mutex_t));
-	if (!table->philos[id].lmutex)
-		return (destroy_forks_mutex(table, id, 0));
-	if (pthread_mutex_init(table->philos[id].lmutex, NULL))
-		return (destroy_philos_mutex(table, id, 1));
-	table->philos[id].mmutex = malloc(sizeof(pthread_mutex_t));
-	if (!table->philos[id].mmutex)
-		return (destroy_forks_mutex(table, id, 2));
-	if (pthread_mutex_init(table->philos[id].mmutex, NULL))
-		return (destroy_philos_mutex(table, id, 3));
+		table->philos[pos].left_fork = &table->forks[pos - 1];
+	table->philos[pos].right_fork = &table->forks[pos];
+	table->philos[pos].lmutex = malloc(sizeof(pthread_mutex_t));
+	if (!table->philos[pos].lmutex)
+		return (destroy_philos_mutex(table, pos, 0));
+	if (pthread_mutex_init(table->philos[pos].lmutex, NULL))
+		return (destroy_philos_mutex(table, pos, 1));
+	table->philos[pos].mmutex = malloc(sizeof(pthread_mutex_t));
+	if (!table->philos[pos].mmutex)
+		return (destroy_philos_mutex(table, pos, 2));
+	if (pthread_mutex_init(table->philos[pos].mmutex, NULL))
+		return (destroy_philos_mutex(table, pos, 3));
 	return (0);
 }
 
