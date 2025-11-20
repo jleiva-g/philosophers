@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/31 17:34:41 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/11/14 16:30:25 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/11/20 11:30:28 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ static int	take_fork(t_philo *philo, int side)
 	if (fork->is_taken)
 	{
 		pthread_mutex_unlock(fork->mutex);
-		usleep(1000);
+		usleep(10);
 		return (1);
 	}
 	else
@@ -80,7 +80,7 @@ static int	ph_eat(t_philo *philo)
 static void	start_thinking(t_philo *philo)
 {
 	print_status(philo->table, philo->id, 't');
-	usleep(500);
+	usleep(1000);
 }
 
 void	*routine(void *param)
@@ -92,9 +92,9 @@ void	*routine(void *param)
 		start_thinking(philo);
 	while (!get_status(philo->table))
 	{
-		while (take_fork(philo, philo->table->nphilos != philo->id))
+		while (take_fork(philo, 1))
 			;
-		while (take_fork(philo, philo->table->nphilos == philo->id))
+		while (take_fork(philo, 0))
 			;
 		if (get_status(philo->table))
 			return (NULL);
