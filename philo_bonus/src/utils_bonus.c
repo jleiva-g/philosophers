@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 10:33:04 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/11/13 17:34:37 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/11/20 08:39:53 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ long	get_time(long start_time)
 void	print_status(t_table *table, int philo, char mode)
 {
 	char	*str;
+	int		status;
 
 	str = "";
 	if (mode == 'f')
@@ -64,7 +65,13 @@ void	print_status(t_table *table, int philo, char mode)
 	else if (mode == 'd')
 		str = "\e[91m\0died\e[0m";
 	sem_wait(table->print_sem);
-	printf("%s%06li %i %s\n", str, get_time(table->stime), philo, str + 6);
+	if (mode == 'd')
+		usleep(500);
+	pthread_mutex_lock(table->mutex);
+	status = table->status;
+	pthread_mutex_unlock(table->mutex);
+	if (status)
+		printf("%s%06li %i %s\n", str, get_time(table->stime), philo, str + 6);
 	sem_post(table->print_sem);
 }
 
