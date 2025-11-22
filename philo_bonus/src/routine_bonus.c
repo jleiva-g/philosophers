@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/31 17:34:41 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/11/14 18:54:50 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/11/22 14:11:17 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ static void	routine(t_philo *philo)
 		sem_post(philo->table->plate_sem);
 		check_termination(philo);
 		print_status(philo->table, philo->id, 's');
-		usleep(philo->table->tsleep * 1000);
+		usleep(philo->table->tsleep * 1000 + 50);
 		check_termination(philo);
 		print_status(philo->table, philo->id, 't');
 	}
@@ -111,11 +111,6 @@ void	start_routine(t_philo *philo)
 		pthread_join(philo->death_checker, NULL);
 		child_cleanup(philo->table);
 		exit(1);
-	}
-	if (!(philo->id % 2))
-	{
-		print_status(philo->table, philo->id, 't');
-		usleep(500);
 	}
 	routine(philo);
 }
