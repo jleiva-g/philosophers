@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/31 17:34:41 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/11/22 14:11:17 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/11/24 12:33:10 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ static void	routine(t_philo *philo)
 		sem_post(philo->table->plate_sem);
 		check_termination(philo);
 		print_status(philo->table, philo->id, 's');
-		usleep(philo->table->tsleep * 1000 + 50);
+		usleep(philo->table->tsleep * 1000 + 1000);
 		check_termination(philo);
 		print_status(philo->table, philo->id, 't');
 	}
@@ -60,7 +60,7 @@ static void	*check_death(void *param)
 	t_philo	*philo;
 	int		status;
 
-	philo = (t_philo *) param;
+	philo = param;
 	status = 1;
 	while (status)
 	{
@@ -76,7 +76,7 @@ static void	*check_death(void *param)
 		pthread_mutex_lock(philo->table->mutex);
 		status = philo->table->status;
 		pthread_mutex_unlock(philo->table->mutex);
-		usleep(1000);
+		usleep(500);
 	}
 	return (NULL);
 }
@@ -85,7 +85,7 @@ static void	*check_sigterm(void *param)
 {
 	t_table	*table;
 
-	table = (t_table *) param;
+	table = param;
 	sem_wait(table->sigterm_sem);
 	pthread_mutex_lock(table->mutex);
 	table->status = 0;

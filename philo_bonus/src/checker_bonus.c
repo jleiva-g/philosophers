@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/31 17:34:39 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/11/10 20:30:43 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/11/24 13:16:33 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static void	*check_death(void *param)
 {
 	t_table	*table;
 
-	table = (t_table *) param;
+	table = param;
 	sem_wait(table->death_sem);
 	pthread_mutex_lock(table->mutex);
 	table->status = 0;
@@ -29,7 +29,7 @@ static void	*check_meals(void *param)
 	t_table	*table;
 	int		i;
 
-	table = (t_table *) param;
+	table = param;
 	i = -1;
 	while (++i < table->nphilos)
 		sem_wait(table->meals_sem);
@@ -67,7 +67,7 @@ void	checker(t_table *table)
 		pthread_mutex_lock(table->mutex);
 		status = table->status;
 		pthread_mutex_unlock(table->mutex);
-		usleep(100);
+		usleep(500);
 	}
 	sem_post(table->death_sem);
 	i = -1;

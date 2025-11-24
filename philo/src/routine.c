@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/31 17:34:41 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/11/20 11:30:28 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/11/24 13:15:40 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ void	*routine(void *param)
 {
 	t_philo	*philo;
 
-	philo = (t_philo *) param;
+	philo = param;
 	if (philo->id % 2)
 		start_thinking(philo);
 	while (!get_status(philo->table))

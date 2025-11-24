@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 10:33:04 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/11/20 08:39:53 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/11/24 12:37:06 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ void	print_status(t_table *table, int philo, char mode)
 		str = "\e[91m\0died\e[0m";
 	sem_wait(table->print_sem);
 	if (mode == 'd')
-		usleep(500);
+		usleep(2000);
 	pthread_mutex_lock(table->mutex);
 	status = table->status;
 	pthread_mutex_unlock(table->mutex);
