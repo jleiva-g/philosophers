@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/31 17:34:41 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/11/24 13:15:40 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/12/10 13:51:06 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ static int	ph_eat(t_philo *philo)
 static void	start_thinking(t_philo *philo)
 {
 	print_status(philo->table, philo->id, 't');
-	usleep(1000);
+	usleep(30000);
 }
 
 void	*routine(void *param)
