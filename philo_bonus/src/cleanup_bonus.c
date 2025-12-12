@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 16:27:44 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/11/13 16:16:50 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/12/12 18:57:31 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,14 @@ void	wait_children(t_table *table, int nmemb)
 		waitpid(table->children[i], NULL, 0);
 }
 
-static void	clear_sem_sigterm(t_table *table, int mode)
+static void	clear_sem_continued(t_table *table, int mode)
 {
 	if (mode > 4)
+	{
+		sem_close(table->status_sem);
+		sem_unlink("/status");
+	}
+	if (mode > 5)
 	{
 		sem_close(table->sigterm_sem);
 		sem_unlink("/sigterm");
@@ -59,12 +64,12 @@ void	clear_sem(t_table *table, int mode)
 		sem_close(table->print_sem);
 		sem_unlink("/print");
 	}
-	clear_sem_sigterm(table, mode);
+	clear_sem_continued(table, mode);
 }
 
 void	free_exit(t_table *table, int mode)
 {
-	clear_sem(table, 5);
+	clear_sem(table, 6);
 	free(table->philos);
 	if (mode > 1)
 		pthread_mutex_destroy(table->mutex);
@@ -78,7 +83,7 @@ void	free_exit(t_table *table, int mode)
 void	cleanup(t_table *table)
 {
 	wait_children(table, table->nphilos);
-	clear_sem(table, 5);
+	clear_sem(table, 6);
 	free(table->philos);
 	pthread_mutex_destroy(table->mutex);
 	free(table->mutex);

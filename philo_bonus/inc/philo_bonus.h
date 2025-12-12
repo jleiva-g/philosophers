@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 16:07:29 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/11/13 18:59:47 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/12/12 18:56:36 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ typedef struct s_philo
 	long			meals;
 	pthread_t		death_checker;
 	pthread_t		sigterm_checker;
+	sem_t			*philo_sem;
 }	t_philo;
 
 typedef struct s_table
@@ -43,7 +44,7 @@ typedef struct s_table
 	long			tsleep;
 	long			max_meals;
 	int				status;
-	struct s_philo	*philos;
+	t_philo			*philos;
 	pid_t			*children;
 	pthread_t		death_checker;
 	pthread_t		meals_checker;
@@ -53,6 +54,7 @@ typedef struct s_table
 	sem_t			*death_sem;
 	sem_t			*meals_sem;
 	sem_t			*print_sem;
+	sem_t			*status_sem;
 	sem_t			*sigterm_sem;
 }	t_table;
 

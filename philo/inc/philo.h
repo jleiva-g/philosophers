@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 16:07:29 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/11/10 19:36:57 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/12/12 18:58:59 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,8 @@ typedef struct s_philo
 	struct s_table	*table;
 	long			last_meal;
 	long			meals;
-	struct s_fork	*left_fork;
-	struct s_fork	*right_fork;
+	t_fork			*left_fork;
+	t_fork			*right_fork;
 	pthread_mutex_t	*lmutex;
 	pthread_mutex_t	*mmutex;
 }	t_philo;
@@ -47,8 +47,8 @@ typedef struct s_table
 	long			max_meals;
 	int				status;
 	pthread_t		*threads;
-	struct s_philo	*philos;
-	struct s_fork	*forks;
+	t_philo			*philos;
+	t_fork			*forks;
 	pthread_mutex_t	*smutex;
 	pthread_mutex_t	*wmutex;
 }	t_table;
