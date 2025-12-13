@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 10:33:04 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/12/13 11:52:37 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/12/13 13:14:15 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	check_input(char **argv)
 	}
 }
 
-long	ft_atol(char *nptr)
+int	ph_atoi(char *nptr)
 {
 	long	n;
 
@@ -35,6 +35,8 @@ long	ft_atol(char *nptr)
 	while (*nptr)
 	{
 		n = n * 10 + *nptr - '0';
+		if (n > INT_MAX)
+			return (0);
 		nptr++;
 	}
 	return (n);

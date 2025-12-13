@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 19:40:45 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/12/13 09:54:29 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/12/13 13:14:45 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,17 +99,17 @@ static void	init_children(t_table *table)
 void	init(t_table *table, int argc, char **argv)
 {
 	check_input(argv);
-	table->nphilos = ft_atol(argv[1]);
-	table->tdie = ft_atol(argv[2]);
-	table->teat = ft_atol(argv[3]);
-	table->tsleep = ft_atol(argv[4]);
-	if (table->nphilos > 400 || !table->nphilos || !table->tdie
-		|| !table->teat || !table->tsleep)
-		exit(EXIT_FAILURE);
+	table->nphilos = ph_atoi(argv[1]);
+	table->tdie = ph_atoi(argv[2]);
+	table->teat = ph_atoi(argv[3]);
+	table->tsleep = ph_atoi(argv[4]);
 	if (argc == 6)
-		table->max_meals = ft_atol(argv[5]);
+		table->max_meals = ph_atoi(argv[5]);
 	else
 		table->max_meals = -1;
+	if (table->nphilos > 400 || !table->nphilos || !table->tdie
+		|| !table->teat || !table->tsleep || !table->max_meals)
+		exit(EXIT_FAILURE);
 	table->status = 1;
 	init_sem(table);
 	init_philos(table);

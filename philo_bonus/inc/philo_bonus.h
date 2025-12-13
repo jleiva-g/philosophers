@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 16:07:29 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/12/13 09:43:19 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/12/13 13:13:34 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
+# include <limits.h>
 # include <sys/time.h>
 # include <pthread.h>
 # include <signal.h>
@@ -60,7 +61,7 @@ typedef struct s_table
 
 // utils
 void	check_input(char **argv);
-long	ft_atol(char *nptr);
+int		ph_atoi(char *nptr);
 long	get_time(long time);
 void	print_status(t_table *table, int philo, char mode);
 // init
