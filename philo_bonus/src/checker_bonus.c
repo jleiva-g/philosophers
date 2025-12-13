@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/31 17:34:39 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/11/24 13:16:33 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/12/13 11:46:03 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,9 @@ static void	*check_death(void *param)
 
 	table = param;
 	sem_wait(table->death_sem);
-	pthread_mutex_lock(table->mutex);
+	sem_wait(table->status_sem);
 	table->status = 0;
-	pthread_mutex_unlock(table->mutex);
+	sem_post(table->status_sem);
 	return (NULL);
 }
 
@@ -33,9 +33,9 @@ static void	*check_meals(void *param)
 	i = -1;
 	while (++i < table->nphilos)
 		sem_wait(table->meals_sem);
-	pthread_mutex_lock(table->mutex);
+	sem_wait(table->status_sem);
 	table->status = 0;
-	pthread_mutex_unlock(table->mutex);
+	sem_post(table->status_sem);
 	return (NULL);
 }
 
@@ -44,14 +44,14 @@ static void	create_threads(t_table *table)
 	if (pthread_create(&table->death_checker, NULL, &check_death, table))
 	{
 		cleanup(table);
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 	if (pthread_create(&table->meals_checker, NULL, &check_meals, table))
 	{
 		sem_post(table->death_sem);
 		pthread_join(table->death_checker, NULL);
 		cleanup(table);
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 }
 
@@ -64,10 +64,10 @@ void	checker(t_table *table)
 	status = 1;
 	while (status)
 	{
-		pthread_mutex_lock(table->mutex);
+		sem_wait(table->status_sem);
 		status = table->status;
-		pthread_mutex_unlock(table->mutex);
-		usleep(500);
+		sem_post(table->status_sem);
+		usleep(100);
 	}
 	sem_post(table->death_sem);
 	i = -1;

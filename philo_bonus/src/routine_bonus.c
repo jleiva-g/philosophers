@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/31 17:34:41 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/11/24 12:33:10 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/12/13 11:52:01 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,15 +16,14 @@ static void	check_termination(t_philo *philo)
 {
 	int	status;
 
-	pthread_mutex_lock(philo->table->mutex);
+	sem_wait(philo->philo_sem);
 	status = philo->table->status;
-	pthread_mutex_unlock(philo->table->mutex);
+	sem_post(philo->philo_sem);
 	if (!status)
 	{
 		pthread_join(philo->death_checker, NULL);
 		pthread_join(philo->sigterm_checker, NULL);
-		child_cleanup(philo->table);
-		exit(0);
+		child_cleanup(philo, EXIT_SUCCESS);
 	}
 }
 
@@ -67,15 +66,15 @@ static void	*check_death(void *param)
 		if (get_time(philo->table->stime) - philo->last_meal
 			> philo->table->tdie)
 		{
-			print_status(philo->table, philo->id, 'd');
-			pthread_mutex_lock(philo->table->mutex);
-			philo->table->status = 0;
-			pthread_mutex_unlock(philo->table->mutex);
 			sem_post(philo->table->death_sem);
+			print_status(philo->table, philo->id, 'd');
+			sem_wait(philo->philo_sem);
+			philo->table->status = 0;
+			sem_post(philo->philo_sem);
 		}
-		pthread_mutex_lock(philo->table->mutex);
+		sem_wait(philo->philo_sem);
 		status = philo->table->status;
-		pthread_mutex_unlock(philo->table->mutex);
+		sem_post(philo->philo_sem);
 		usleep(500);
 	}
 	return (NULL);
@@ -83,34 +82,38 @@ static void	*check_death(void *param)
 
 static void	*check_sigterm(void *param)
 {
-	t_table	*table;
+	t_philo	*philo;
 
-	table = param;
-	sem_wait(table->sigterm_sem);
-	pthread_mutex_lock(table->mutex);
-	table->status = 0;
-	pthread_mutex_unlock(table->mutex);
+	philo = param;
+	sem_wait(philo->table->sigterm_sem);
+	sem_wait(philo->philo_sem);
+	philo->table->status = 0;
+	sem_post(philo->philo_sem);
 	return (NULL);
 }
 
 void	start_routine(t_philo *philo)
 {
+	sem_unlink(philo->sem_name);
+	philo->philo_sem = sem_open(philo->sem_name, O_CREAT, 0644, 1);
+	if (philo->philo_sem == SEM_FAILED)
+	{
+		sem_post(philo->table->death_sem);
+		child_cleanup(philo, EXIT_FAILURE);
+	}
 	if (pthread_create(&philo->death_checker, NULL, &check_death, philo))
 	{
 		sem_post(philo->table->death_sem);
-		child_cleanup(philo->table);
-		exit(1);
+		child_cleanup(philo, EXIT_FAILURE);
 	}
-	if (pthread_create(&philo->sigterm_checker, NULL, &check_sigterm,
-			philo->table))
+	if (pthread_create(&philo->sigterm_checker, NULL, &check_sigterm, philo))
 	{
 		sem_post(philo->table->death_sem);
-		pthread_mutex_lock(philo->table->mutex);
+		sem_wait(philo->philo_sem);
 		philo->table->status = 0;
-		pthread_mutex_unlock(philo->table->mutex);
+		sem_post(philo->philo_sem);
 		pthread_join(philo->death_checker, NULL);
-		child_cleanup(philo->table);
-		exit(1);
+		child_cleanup(philo, EXIT_FAILURE);
 	}
 	routine(philo);
 }

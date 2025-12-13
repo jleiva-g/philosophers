@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 10:33:04 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/11/24 12:37:06 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/12/13 11:52:37 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	check_input(char **argv)
 		j = -1;
 		while (argv[i][++j])
 			if (argv[i][j] < '0' || argv[i][j] > '9')
-				exit(1);
+				exit(EXIT_FAILURE);
 	}
 }
 
@@ -65,29 +65,12 @@ void	print_status(t_table *table, int philo, char mode)
 	else if (mode == 'd')
 		str = "\e[91m\0died\e[0m";
 	sem_wait(table->print_sem);
-	if (mode == 'd')
-		usleep(2000);
-	pthread_mutex_lock(table->mutex);
+	sem_wait(table->status_sem);
 	status = table->status;
-	pthread_mutex_unlock(table->mutex);
+	sem_post(table->status_sem);
 	if (status)
 		printf("%s%06li %i %s\n", str, get_time(table->stime), philo, str + 6);
+	if (mode == 'd')
+		usleep(10000);
 	sem_post(table->print_sem);
-}
-
-void	child_cleanup(t_table *table)
-{
-	sem_post(table->forks_sem);
-	sem_post(table->forks_sem);
-	sem_post(table->plate_sem);
-	sem_close(table->forks_sem);
-	sem_close(table->plate_sem);
-	sem_close(table->death_sem);
-	sem_close(table->meals_sem);
-	sem_close(table->print_sem);
-	sem_close(table->sigterm_sem);
-	free(table->philos);
-	pthread_mutex_destroy(table->mutex);
-	free(table->mutex);
-	free(table->children);
 }
