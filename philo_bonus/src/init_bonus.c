@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 19:40:45 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/12/13 13:14:45 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/12/14 17:40:53 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,8 @@ static void	init_sem(t_table *table)
 	table->forks_sem = sem_open("/forks", O_CREAT, 0644, table->nphilos);
 	if (table->forks_sem == SEM_FAILED)
 		exit(EXIT_FAILURE);
-	table->plate_sem = sem_open("/plate", O_CREAT, 0644, table->nphilos / 2);
+	table->plate_sem = sem_open(
+			"/plate", O_CREAT, 0644, (table->nphilos + 1) / 2);
 	if (table->plate_sem == SEM_FAILED)
 		close_sems(table, 0);
 	table->death_sem = sem_open("/death", O_CREAT, 0644, 0);

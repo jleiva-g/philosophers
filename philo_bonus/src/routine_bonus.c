@@ -6,7 +6,7 @@
 /*   By: jleiva-g <jleiva-g@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/31 17:34:41 by jleiva-g          #+#    #+#             */
-/*   Updated: 2025/12/13 11:52:01 by jleiva-g         ###   ########.fr       */
+/*   Updated: 2025/12/14 17:35:35 by jleiva-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,8 @@ static void	*check_death(void *param)
 			sem_wait(philo->philo_sem);
 			philo->table->status = 0;
 			sem_post(philo->philo_sem);
+			sem_post(philo->table->plate_sem);
+			sem_post(philo->table->forks_sem);
 		}
 		sem_wait(philo->philo_sem);
 		status = philo->table->status;
