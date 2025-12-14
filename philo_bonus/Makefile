@@ -1,4 +1,5 @@
 NAME		= philo_bonus
+HEADER		= inc/philo_bonus.h
 SRC_FILES	= main_bonus.c init_bonus.c utils_bonus.c checker_bonus.c \
 				routine_bonus.c cleanup_bonus.c
 SRC_DIR		= src
@@ -13,7 +14,7 @@ $(NAME): $(OBJ)
 	@$(CC) $(CFLAGS) $(OBJ) -o $(NAME)
 	@echo "Compilation successful. Created $(NAME)"
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(HEADER) | $(OBJ_DIR)
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 $(OBJ_DIR):
